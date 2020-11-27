@@ -52,16 +52,16 @@ def policy_evaluation(P, nS, nA, policy, gamma=0.9, tol=1e-3):
 	"""
 
 	value_function = np.zeros(nS,dtype = np.float32)	
-	prev_value = np.zeros(nS, dtype = np.float32)
 	e = tol
 	while(e>= tol):
 		e = 0
 		for i in range(nS):
-			value_function[i] = 0
+			v_temp = 0
+			prev_value = value_function[i]
 			for prob,nextstate,reward,terminal in P[i][policy[i]]:
-				value_function[i] += float(prob)*(float(reward) + gamma*float(prev_value[nextstate]))
-			e = max(e,value_function[i]-prev_value[i])
-		prev_value = np.copy(value_function)
+				v_temp += float(prob)*(float(reward) + gamma*float(value_function[nextstate]))
+			value_function[i] = v_temp
+			e = max(e,value_function[i]-prev_value)
 	return value_function
 
 
